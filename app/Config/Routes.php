@@ -27,4 +27,7 @@ $routes->get('/personas', 'PersonaController::index');
 $routes->get('/personas/crear', 'PersonaController::crear');
 $routes->post('/personas/guardar', 'PersonaController::guardar');
 
+//API
 $routes->get('/api/personas/buscardni/(:num)', 'PersonaController::searchByDNI/$1');
+$routes->get('/api/ubigeo/provincias/(:num)', 'ProvinciaController::getProvinciasByDepartamento/$1');
+$routes->get('/api/ubigeo/distritos/(:num)', 'DistritoController::getDistritosByProvincia/$1');

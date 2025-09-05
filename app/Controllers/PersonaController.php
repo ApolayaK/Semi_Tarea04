@@ -3,6 +3,7 @@
 namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\Persona;
+use App\Models\Departamento;
 
 class PersonaController extends BaseController{
 
@@ -17,6 +18,9 @@ class PersonaController extends BaseController{
   }
 
   public function crear(){
+    $departamento = new Departamento();
+
+    $datos['departamentos'] = $departamento->orderBy('departamento', 'ASC')->findAll();
     $datos['header'] = view('Layouts/header');
     $datos['footer'] = view('Layouts/footer');
 
@@ -88,6 +92,10 @@ class PersonaController extends BaseController{
 
     $persona->insert($registro);
     return $this->response->redirect(base_url('personas'));
+
+    
   }
+
+  
 
 }
