@@ -1,48 +1,70 @@
 <?= $header; ?>
 
-<div class="container mt-2">
-  <div class="my-2">
-    <h4>Registro de personas</h4>
-    <a href="<?= base_url("personas"); ?>">Listar</a>
+<div class="container my-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="fw-bold text-primary">
+      <i class="bi bi-person-plus-fill"></i> Registro de Personas
+    </h2>
+    <a href="<?= base_url("personas"); ?>" class="btn btn-outline-secondary">
+      <i class="bi bi-list-ul"></i> Listar
+    </a>
   </div>
 
   <form action="<?= base_url('personas/guardar') ?>" method="POST" autocomplete="off">
-    <div class="card">
+    <div class="card shadow-sm border-0">
       <div class="card-body">
-        <div class="mb-2">
-          <label for="">Buscador por DNI</label>
-          <small class="d-none" id="searching"> - Por favor espere...</small>
+
+        <!-- Buscador por DNI -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold">
+            <i class="bi bi-credit-card-2-front"></i> Buscador por DNI
+          </label>
+          <small class="d-none text-muted" id="searching"> - Por favor espere...</small>
           <div class="input-group">
-            <input type="text" class="form-control" id="dni" name="dni" maxlength="8" minlength="8" required autofocus>
-            <button class="btn btn-outline-success" type="button" id="buscar-dni">Buscar</button>
+            <input type="text" class="form-control" id="dni" name="dni" maxlength="8" minlength="8" required autofocus placeholder="Ingrese DNI">
+            <button class="btn btn-outline-success" type="button" id="buscar-dni">
+              <i class="bi bi-search"></i> Buscar
+            </button>
           </div>
         </div>
 
-        <div class="row g-2">
-          <div class="col-md-6 mb-2">
-            <label for="apellidos">Apellidos</label>
+        <!-- Datos personales -->
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label for="apellidos" class="form-label fw-semibold">
+              <i class="bi bi-person-badge"></i> Apellidos
+            </label>
             <input type="text" class="form-control" name="apellidos" id="apellidos" required>
           </div>
-          <div class="col-md-6 mb-2">
-            <label for="nombres">Nombres</label>
+          <div class="col-md-6">
+            <label for="nombres" class="form-label fw-semibold">
+              <i class="bi bi-person"></i> Nombres
+            </label>
             <input type="text" class="form-control" name="nombres" id="nombres" required>
           </div>
         </div>
 
-        <div class="row g-2">
-          <div class="col-md-4 mb-2">
-            <label for="telefono">Teléfono</label>
+        <div class="row g-3 mt-1">
+          <div class="col-md-4">
+            <label for="telefono" class="form-label fw-semibold">
+              <i class="bi bi-telephone"></i> Teléfono
+            </label>
             <input type="text" class="form-control" name="telefono" id="telefono" maxlength="9" pattern="[0-9]*" title="Solo se permiten números">
           </div>
-          <div class="col-md-8 mb-2">
-            <label for="direccion">Dirección</label>
+          <div class="col-md-8">
+            <label for="direccion" class="form-label fw-semibold">
+              <i class="bi bi-house"></i> Dirección
+            </label>
             <input type="text" class="form-control" name="direccion" id="direccion">
           </div>
         </div>
 
-        <div class="row g-2">
-          <div class="col-md-4 mb-2">
-            <label for="departamentos">Departamentos</label>
+        <!-- Ubigeo -->
+        <div class="row g-3 mt-1">
+          <div class="col-md-4">
+            <label for="departamentos" class="form-label fw-semibold">
+              <i class="bi bi-building"></i> Departamentos
+            </label>
             <select name="departamentos" id="departamentos" class="form-select">
               <option value="">Seleccione</option>
               <?php foreach($departamentos as $departamento): ?>
@@ -50,14 +72,18 @@
               <?php endforeach; ?>
             </select>
           </div>
-          <div class="col-md-4 mb-2">
-            <label for="provincias">Provincias</label>
+          <div class="col-md-4">
+            <label for="provincias" class="form-label fw-semibold">
+              <i class="bi bi-map"></i> Provincias
+            </label>
             <select name="provincias" id="provincias" class="form-select">
               <option value="">Seleccione</option>
             </select>
           </div>
-          <div class="col-md-4 mb-2">
-            <label for="distritos">Distritos</label>
+          <div class="col-md-4">
+            <label for="distritos" class="form-label fw-semibold">
+              <i class="bi bi-geo-alt"></i> Distritos
+            </label>
             <select name="distritos" id="distritos" class="form-select" required>
               <option value="">Seleccione</option>
             </select>
@@ -65,9 +91,15 @@
         </div>
 
       </div>
-      <div class="card-footer text-end">
-        <button class="btn btn-sm btn-outline-secondary" type="reset">Cancelar</button>
-        <button class="btn btn-sm btn-primary" type="submit">Guardar</button>
+
+      <!-- Footer de la tarjeta -->
+      <div class="card-footer d-flex justify-content-end gap-2">
+        <button class="btn btn-outline-secondary" type="reset">
+          <i class="bi bi-x-circle"></i> Cancelar
+        </button>
+        <button class="btn btn-primary" type="submit">
+          <i class="bi bi-save"></i> Guardar
+        </button>
       </div>
     </div>
   </form>

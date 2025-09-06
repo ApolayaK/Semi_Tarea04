@@ -31,7 +31,7 @@ class PersonaController extends BaseController{
     
     //Parámetros sensibles API
     $api_endpoint = "https://api.decolecta.com/v1/reniec/dni?numero=" . $dni;
-    $api_token = "sk_5727.JpUJ0x03NnNnNqOgnoe0fQ8uZq1VJgY2";
+    $api_token = "sk_10074.VaxNtkLGxpITcvhX4e0KYBA1o7HM4PF9";
     $content_type = "application/json";
 
     //Configuración de cURL para realización petición
