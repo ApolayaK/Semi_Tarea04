@@ -42,6 +42,11 @@
               <i class="bi bi-people"></i> Personas
             </a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="<?= base_url('recursos'); ?>">
+              <i class="bi bi-collection"></i> Recursos
+            </a>
+          </li>
         </ul>
       </div>
     </div>

@@ -5,9 +5,6 @@
     <h2 class="fw-bold text-primary">
       <i class="bi bi-person-plus-fill"></i> Registro de Personas
     </h2>
-    <a href="<?= base_url("personas"); ?>" class="btn btn-outline-secondary">
-      <i class="bi bi-list-ul"></i> Listar
-    </a>
   </div>
 
   <form action="<?= base_url('personas/guardar') ?>" method="POST" autocomplete="off">
@@ -49,13 +46,26 @@
             <label for="telefono" class="form-label fw-semibold">
               <i class="bi bi-telephone"></i> Teléfono
             </label>
-            <input type="text" class="form-control" name="telefono" id="telefono" maxlength="9" pattern="[0-9]*" title="Solo se permiten números">
+            <input 
+              type="text" 
+              class="form-control" 
+              name="telefono" 
+              id="telefono" 
+              maxlength="9" 
+              required
+              placeholder="Ej: 987654321" 
+              title="Debe empezar con 9 y tener 9 dígitos">
           </div>
           <div class="col-md-8">
             <label for="direccion" class="form-label fw-semibold">
               <i class="bi bi-house"></i> Dirección
             </label>
-            <input type="text" class="form-control" name="direccion" id="direccion">
+            <input 
+              type="text" 
+              class="form-control" 
+              name="direccion" 
+              id="direccion" 
+              required>
           </div>
         </div>
 
@@ -73,10 +83,10 @@
             </select>
           </div>
           <div class="col-md-4">
-            <label for="provincias" class="form-label fw-semibold">
+            <label for="provincias" class="form-label fw-semibold" required>
               <i class="bi bi-map"></i> Provincias
             </label>
-            <select name="provincias" id="provincias" class="form-select">
+            <select name="provincias" id="provincias" class="form-select" required>
               <option value="">Seleccione</option>
             </select>
           </div>
@@ -94,9 +104,9 @@
 
       <!-- Footer de la tarjeta -->
       <div class="card-footer d-flex justify-content-end gap-2">
-        <button class="btn btn-outline-secondary" type="reset">
+        <a href="<?= base_url("personas"); ?>" class="btn btn-outline-secondary">
           <i class="bi bi-x-circle"></i> Cancelar
-        </button>
+        </a>
         <button class="btn btn-primary" type="submit">
           <i class="bi bi-save"></i> Guardar
         </button>
@@ -113,27 +123,39 @@
     const dni = document.querySelector("#dni")
     const buscando = document.querySelector("#searching")
 
+    const telefono = document.querySelector("#telefono")
     const departamentos = document.querySelector("#departamentos")
     const provincias = document.querySelector("#provincias")
     const distritos = document.querySelector("#distritos")
 
+    // Solo números en teléfono
+    telefono.addEventListener("input", () => {
+      telefono.value = telefono.value.replace(/\D/g, "").slice(0, 9)
+    })
+    // Validar teléfono para que empiece con 9 y tenga 9 dígitos
+    function validarTelefono(valor) {
+      return /^9\d{8}$/.test(valor) 
+    }
+
     async function buscarPorDni() {
       const dniValor = dni.value.trim()
       if (dniValor.length !== 8) {
-        alert('Ingrese un DNI válido de 8 dígitos')
+        Swal.fire({
+          icon: "warning",
+          title: "DNI inválido",
+          text: "Debe ingresar 8 dígitos numéricos",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000
+        })
         return
       }
 
       try {
         buscando.classList.remove('d-none')
-        const response = await fetch(`<?= base_url() ?>api/personas/buscardni/${dniValor}`, {
-          method: 'GET',
-          headers: { 'Content-type': 'application/json' }
-        })
-
-        if (!response.ok) {
-          throw new Error('Error en la solicitud')
-        }
+        const response = await fetch(`<?= base_url() ?>api/personas/buscardni/${dniValor}`)
+        if (!response.ok) throw new Error('Error en la solicitud')
 
         const data = await response.json()
         buscando.classList.add('d-none')
@@ -144,19 +166,32 @@
         } else {
           apellidos.value = ''
           nombres.value = ''
-          alert('No se encontraron datos para este DNI')
+          Swal.fire({
+            icon: "info",
+            title: "Sin resultados",
+            text: "No se encontraron datos para este DNI",
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000
+          })
         }
       } catch (error) {
         buscando.classList.add('d-none')
-        console.log(error)
-        alert('Ocurrió un error al buscar el DNI')
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Ocurrió un error al buscar el DNI",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000
+        })
       }
     }
 
-
     botonBusqueda.addEventListener('click', buscarPorDni)
 
-    // Buscqueda de DNI por enter
     dni.addEventListener('keydown', (event) => {
       if (event.key === 'Enter') {
         event.preventDefault()
@@ -164,89 +199,85 @@
       }
     })
 
-    // Carga de provincias al cambiar departamento
+    // Provincias
     departamentos.addEventListener('change', async () => {
       const iddepartamento = departamentos.value
-
       provincias.innerHTML = '<option value="">Seleccione</option>'
       distritos.innerHTML = '<option value="">Seleccione</option>'
-
       if (!iddepartamento) return
 
       try {
-        const response = await fetch(`http://biblioteca.test/api/ubigeo/provincias/${iddepartamento}`, {
-          method: 'GET',
-          headers: { 'Content-type': 'application/json' }
-        })
-
-        if (!response.ok) {
-          throw new Error('Error en la solicitud al servidor')
-        }
-
+        const response = await fetch(`http://biblioteca.test/api/ubigeo/provincias/${iddepartamento}`)
+        if (!response.ok) throw new Error('Error en la solicitud')
         const data = await response.json()
-        if (data.length) {
-          data.forEach(element => {
-            provincias.innerHTML += `<option value="${element.idprovincia}">${element.provincia}</option>`
-          })
-        }
+        data.forEach(element => {
+          provincias.innerHTML += `<option value="${element.idprovincia}">${element.provincia}</option>`
+        })
       } catch (error) {
         console.error(error)
       }
     })
-  })
 
-  // Carga de distritos al cambiar provincia
-  provincias.addEventListener('change', async () => {
-    const idprovincia = provincias.value
-    distritos.innerHTML = '<option value="">Seleccione</option>'
+    // Distritos
+    provincias.addEventListener('change', async () => {
+      const idprovincia = provincias.value
+      distritos.innerHTML = '<option value="">Seleccione</option>'
+      if (!idprovincia) return
 
-    if (!idprovincia) return
-
-    try {
-      const response = await fetch(`http://biblioteca.test/api/ubigeo/distritos/${idprovincia}`, {
-        method: 'GET',
-        headers: { 'Content-type': 'application/json' }
-      })
-
-      if (!response.ok) {
-        throw new Error('Error en la solicitud al servidor')
-      }
-
-      const data = await response.json()
-      if (data.length) {
+      try {
+        const response = await fetch(`http://biblioteca.test/api/ubigeo/distritos/${idprovincia}`)
+        if (!response.ok) throw new Error('Error en la solicitud')
+        const data = await response.json()
         data.forEach(element => {
           distritos.innerHTML += `<option value="${element.iddistrito}">${element.distrito}</option>`
         })
+      } catch (error) {
+        console.error(error)
       }
-    } catch (error) {
-      console.error(error)
-    }
+    })
+
+    // Confirmación antes de guardar
+    const formulario = document.querySelector("form")
+    formulario.addEventListener("submit", function (event) {
+      event.preventDefault()
+
+      if (!validarTelefono(telefono.value)) {
+        Swal.fire({
+          icon: "error",
+          title: "Teléfono inválido",
+          text: "El número es invalido.",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000
+        })
+        return
+      }
+
+      Swal.fire({
+        title: "¿Deseas guardar los datos?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Sí, guardar",
+        cancelButtonText: "Cancelar"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            icon: "success",
+            title: "¡Guardado con éxito!",
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+          })
+          setTimeout(() => {
+            formulario.submit()
+          }, 1000)
+        }
+      })
+    })
   })
-
-
-
-  // Confirmar antes de enviar el formulario
-  const formulario = document.querySelector("form");
-
-formulario.addEventListener("submit", function (event) {
-  event.preventDefault(); 
-
-  Swal.fire({
-    title: "¡Guardado con éxito!",
-    icon: "success",
-    timer: 3000, 
-    timerProgressBar: true,
-    showConfirmButton: false,
-    didOpen: () => {
-      
-      setTimeout(() => {
-        formulario.submit();
-      }, 3000); 
-    }
-  });
-});
-
-
 </script>
 
 <?= $footer; ?>

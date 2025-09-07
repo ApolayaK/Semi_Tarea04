@@ -26,17 +26,26 @@
       <tbody>
         <?php foreach($personas as $persona): ?>
           <tr>
-            <td><?= $persona['idpersona'] ?></td>
-            <td><?= $persona['dni'] ?></td>
-            <td><?= $persona['apellidos'] ?></td>
-            <td><?= $persona['nombres'] ?></td>
-            <td><?= $persona['telefono'] ?></td>
-            <td><?= $persona['iddistrito'] ?></td>
+            <td><?= esc($persona['idpersona']) ?></td>
+            <td><?= esc($persona['dni']) ?></td>
+            <td><?= esc($persona['apellidos']) ?></td>
+            <td><?= esc($persona['nombres']) ?></td>
+            <td><?= esc($persona['telefono']) ?></td>
             <td>
-              <a href="#" class="btn btn-sm btn-warning me-1">
+              <?= esc($persona['departamento']) ?>, 
+              <?= esc($persona['provincia']) ?>, 
+              <?= esc($persona['distrito']) ?>
+            </td>
+            <td>
+
+              <a href="<?= base_url('personas/editar/' . $persona['idpersona']) ?>" 
+                 class="btn btn-sm btn-warning me-1">
                 <i class="bi bi-pencil-square"></i> Editar
               </a>
-              <a href="#" class="btn btn-sm btn-danger">
+
+              <a href="<?= base_url('personas/borrar/' . $persona['idpersona']) ?>" 
+                 class="btn btn-sm btn-danger btn-eliminar" 
+                 data-id="<?= $persona['idpersona'] ?>">
                 <i class="bi bi-trash3"></i> Eliminar
               </a>
             </td>
@@ -46,5 +55,42 @@
     </table>
   </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const botonesEliminar = document.querySelectorAll(".btn-eliminar");
+
+  botonesEliminar.forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const id = btn.getAttribute("data-id");
+
+      Swal.fire({
+        title: "¿Eliminar persona?",
+        text: "Esta acción no se puede deshacer.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Persona eliminada correctamente",
+            showConfirmButton: false,
+            timer: 2000,
+            toast: true
+          });
+
+          setTimeout(() => {
+            window.location.href = "<?= base_url('personas/borrar/'); ?>" + id;
+          }, 2000);
+        }
+      });
+    });
+  });
+});
+</script>
 
 <?= $footer; ?>

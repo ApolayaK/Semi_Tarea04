@@ -1,35 +1,4 @@
-USE biblioteca;
 
- CREATE TABLE departamentos(
-        iddepartamento              INT AUTO_INCREMENT                      PRIMARY KEY,
-        departamento                VARCHAR(40)                             NOT NULL,
-
-        CONSTRAINT uk_departamento_depa UNIQUE (departamento)
-
-    )ENGINE = INNODB;
-
-
-    CREATE TABLE provincias(
-        idprovincia                 INT AUTO_INCREMENT                      PRIMARY KEY,
-        provincia                   VARCHAR(40)                             NOT NULL,
-        iddepartamento              INT                                     NOT NULL,
-
-
-        CONSTRAINT fk_iddepartemento_prov FOREIGN KEY (iddepartamento) REFERENCES departamentos(iddepartamento),
-        CONSTRAINT uk_provincia_prov UNIQUE (provincia)
-
-    )ENGINE = INNODB;
-
-
-    CREATE TABLE distritos(
-        iddistrito                 	INT AUTO_INCREMENT                      PRIMARY KEY,
-        distrito                    VARCHAR(40)                             NOT NULL,
-        idprovincia                 INT                                     NOT NULL,
-
-        CONSTRAINT fk_idprovincia_dist FOREIGN KEY (idprovincia) REFERENCES provincias(idprovincia),
-        CONSTRAINT uk_distrito_provincia UNIQUE (distrito, idprovincia)
-
-    )ENGINE = INNODB;
 
 -- DEPARTAMENTOS
 INSERT INTO departamentos (departamento) VALUES
